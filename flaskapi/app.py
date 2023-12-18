@@ -4,6 +4,8 @@ import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
+from scipy.sparse import hstack
+import joblib
 
 app = Flask(__name__, template_folder='./templates')
 sarcasm_model = load_model()  # Load the model outside the route function
@@ -18,27 +20,23 @@ def predict():
         # Get input data from the request
         data = request.json
 
-        # Preprocess the input data (similar to what you did during training)
-        # For example, if your input data has a 'tweet' field:
-        tweet = data['tweet']
-        # Perform any necessary preprocessing, such as stripping quotes
-        tweet = tweet.strip('"')
+        # Preprocess the input data
+        tweet = data['tweet'].strip('"')
 
-        # Create a DataFrame with the input data (you might need to adapt this based on your actual input)
+        # Create a DataFrame with the input data
         input_data = pd.DataFrame({'tweet': [tweet]})
 
         # One-hot encode categorical columns ('sentiment' and 'dialect')
-        encoder = OneHotEncoder(sparse_output=False)
+        encoder = OneHotEncoder(sparse_output=True)
         categorical_encoded = encoder.fit_transform(input_data[['sentiment', 'dialect']])
-        categorical_encoded_df = pd.DataFrame(categorical_encoded, columns=encoder.get_feature_names_out(['sentiment', 'dialect']))
-        X_encoded = pd.concat([input_data[['tweet']], categorical_encoded_df], axis=1)
+        X_encoded = pd.concat([pd.DataFrame(categorical_encoded.toarray()), input_data[['tweet']]], axis=1)
 
         # Vectorize the text data
         vectorizer = TfidfVectorizer()
         text_vectorized = vectorizer.transform(X_encoded['tweet'])
 
         # Combine vectorized text and one-hot encoded features
-        X_final = pd.concat([pd.DataFrame(text_vectorized.toarray()), X_encoded.drop('tweet', axis=1)], axis=1)
+        X_final = hstack([text_vectorized, X_encoded.drop('tweet', axis=1)])
 
         # Make predictions
         prediction = sarcasm_model.predict(X_final)
