@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Heart Disease Prediction</title>
+    <style>
+                
+    </style>
+</head>
+<body>
+    <h1>Heart Disease Prediction</h1>
+    <form id="prediction-form">
+        <label for="age">Age:</label>
+        <input type="text" id="age" name="age" required>
+
+        <label for="trestbps">Resting Blood Pressure(trestbps):</label>
+        <input type="text" id="trestbps" name="trestbps" required>
+
+        <label for="chol">Cholesterol(chol):</label>
+        <input type="text" id="chol" name="chol" required>
+
+        <label for="thalach">Maximum Heart Rate Achieved(thalach):</label>
+        <input type="text" id="thalach" name="thalach" required>
+
+        <label for="oldpeak">ST Depression Induced by Exercise Relative to Rest(oldpeak):</label>
+        <input type="text" id="oldpeak" name="oldpeak" required>
+
+        <label for="sex">Sex:</label>
+        <select id="sex" name="sex" required>
+            <option value="0">Female</option>
+            <option value="1">Male</option>
+        </select>
+
+        <!-- Add other features as needed -->
+
+        <button type="button" onclick="predict()">Predict</button>
+    </form>
+
+    <div id="result"></div>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script>
+    function predict() {
+        const form = document.getElementById('prediction-form');
+        const formData = new FormData(form);
+        console.log(formData);
+        // Convert FormData to JSON
+        const jsonData = {};
+
+        // Mapping of feature names in HTML form to Flask API
+        const featureMapping = {
+            'age': 'age',
+            'trestbps': 'trestbps',
+            'chol': 'chol',
+            'thalach': 'thalach',
+            'oldpeak': 'oldpeak',
+            'sex': ['sex_0', 'sex_1'],
+            // Add other features as needed
+        };
+
+        formData.forEach((value, key) => {
+            // Check if the key is mapped
+            if (featureMapping.hasOwnProperty(key)) {
+                const mappedKey = featureMapping[key];
+                if (Array.isArray(mappedKey)) {
+                    // Handle special case for 'sex'
+                    jsonData[mappedKey[parseInt(value)]] = 1;
+                } else {
+                    // Handle other features
+                    jsonData[mappedKey] = parseInt(value);
+                }
+            }
+        });
+
+        console.log(jsonData);
+         axios.post('/predict', jsonData)
+            .then(response => {
+                const data = response.data;
+                console.log(response.data);
+
+                // Display an alert based on the prediction result
+                const alert = document.createElement('div');
+                alert.className = 'prediction-alert';
+               alert.classList.add(data.prediction === 1 ? 'red' : 'green');
+
+                // Set the message based on the prediction
+                alert.innerHTML = `<div><h1>${data.prediction === 1 ? 'Patient is going to have a heart disease.' : 'Patient is well.'}</h1><img src="${data.prediction === 1 ? '../static/heart_attack.webp' : '../static/safe_heart.webp'}" alt="${data.prediction === 1 ? 'Heart Disease' : 'Well'}"></div>`;
+
+                // Append the alert to the body
+                document.body.appendChild(alert);
+                // Set a timeout to remove the alert after a certain duration (e.g., 5000 milliseconds)
+                setTimeout(() => {
+                    alert.remove();
+                }, 5000);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = 'Error predicting. Please try again.';
+            });
+    }
+</script>
+</body>
+</html>

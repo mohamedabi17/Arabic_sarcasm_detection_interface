@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 50px;
+    background-image: url(./heart2.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    /* Avoid repetition */
+    /* Additional properties for a centered background image */
+    background-position: center;
+    background-attachment: fixed;
+    /* Keeps the background fixed while scrolling */
+}
+h1 {
+    color: red;
+    font-weight: 900;
+    font-family:  Georgia, Times, 'Times New Roman', serif;
+}
+
+form {
+    display: inline-block;
+    padding: 20px;
+    background-color: transparent;
+    border-radius: 8px;
+    color: blue;
+    text-shadow: 0 0 30px white;
+}
+
+label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+    background-color:transparent;
+    color: blue;
+    font-size: x-large;
+    text-align: center;
+    border-radius: 15% 75%;
+}
+input:hover {
+    background-color:#ff00006e;
+    color: white;
+    text-align: center;
+ 
+}
+
+button {
+    background-color: red;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+ .prediction-alert {
+     position: fixed;
+     top: 50%;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     background-color: #fff;
+     border: 1px solid #ccc;
+     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+     text-align: center;
+     padding: 20px;
+     background-size: cover;
+     /* Set background size to cover */
+     background-repeat: no-repeat;
+     /* Do not repeat the background */
+     background-position: center;
+     /* Center the background image */
+ }
+
+ .prediction-alert h1 {
+     font-size: 24px;
+     margin-bottom: 10px;
+     font-weight: bold;
+     color: green;
+     /* Default color for well prediction */
+ }
+
+ .prediction-alert img {
+     display: none;
+     /* Hide the image element */
+ }
+
+ .prediction-alert.red {
+     background-image: url('../static/heart_attack.webp');
+     /* Set the background image for heart disease prediction */
+     color: red;
+     font-weight: 900;
+     /* Set text color for better visibility */
+ }
+  .prediction-alert.red h1{
+
+      color: red;
+      font-weight: 900;
+  }
+
+ .prediction-alert.green h1{
+     color: rgb(8, 246, 8);
+     font-weight: 900;
+     /* Set the background image for well prediction */
+ }
