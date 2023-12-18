@@ -1,53 +1,54 @@
-# app.py
-from flask import Flask,render_template, request, jsonify
-from models.randomforest_model import load_model
+from flask import Flask, render_template, request, jsonify
+from models.sarcasm_model_creator import load_model
 import numpy as np
+from flask import Flask, request, jsonify
 import pandas as pd
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.preprocessing import OneHotEncoder
+import joblib
 app = Flask(__name__, template_folder='./templates')
-randomforest_model = load_model()  # Load the model outside the route function
-
-
-dataset_path = './models/dataset.csv'
-data = pd.read_csv(dataset_path)
-X_train = data.drop('target', axis=1)  # Adjust the column name according to your dataset
-y_train = data['target']  # Adjust the column name according to your dataset
-randomforest_model.fit(X_train, y_train)
-
+sarcasm_model = load_model()  # Load the model outside the route function
 
 @app.route('/')
 def home():
-   return render_template('app.html')  # Adjust the path based on your folder structure
+    return render_template('app.html')  # Adjust the path based on your folder structure
 
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
         # Get input data from the request
-        data = request.get_json()
+        data = request.json
 
-        # Define a list of required features
-        required_features = [
-            'age', 'trestbps', 'chol', 'thalach', 'oldpeak', 'sex_1',
-            'sex_1', 'cp_0', 'cp_1', 'thal_0', 'thal_1', 'thal_2', 'thal_3'
-        ]
+        # Preprocess the input data (similar to what you did during training)
+        # For example, if your input data has a 'tweet' field:
+        tweet = data['tweet']
+        # Perform any necessary preprocessing, such as stripping quotes
+        tweet = tweet.strip('"')
 
-        # Convert relevant features to float, providing default values for missing ones
-        features = [
-            float(data.get(feature, 0)) for feature in required_features
-        ]
+        # Create a DataFrame with the input data (you might need to adapt this based on your actual input)
+        input_data = pd.DataFrame({'tweet': [tweet]})
 
-        # Convert features to a NumPy array for prediction
-        features_array = np.array([features], dtype=np.float64)
+        # One-hot encode categorical columns ('sentiment' and 'dialect')
+        encoder = OneHotEncoder(sparse_output=False)
+        categorical_encoded = encoder.fit_transform(input_data[['sentiment', 'dialect']])
+        categorical_encoded_df = pd.DataFrame(categorical_encoded, columns=encoder.get_feature_names_out(['sentiment', 'dialect']))
+        X_encoded = pd.concat([input_data[['tweet']], categorical_encoded_df], axis=1)
 
-        # Use the loaded Random Forest model for predictions
-        prediction = randomforest_model.predict(features_array)
+        # Vectorize the text data
+        vectorizer = TfidfVectorizer()
+        text_vectorized = vectorizer.transform(X_encoded['tweet'])
 
-        # Return the prediction
+        # Combine vectorized text and one-hot encoded features
+        X_final = pd.concat([pd.DataFrame(text_vectorized.toarray()), X_encoded.drop('tweet', axis=1)], axis=1)
+
+        # Make predictions
+        prediction = sarcasm_model.predict(X_final)
+        print("Prediction:", prediction)
+        # Return the prediction as JSON
         return jsonify({'prediction': int(prediction[0])})
 
     except Exception as e:
         return jsonify({'error': str(e)})
-
 
 if __name__ == '__main__':
     app.run(debug=True)

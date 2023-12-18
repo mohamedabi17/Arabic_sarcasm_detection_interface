@@ -3,7 +3,7 @@ body {
     background-color: #f4f4f4;
     text-align: center;
     margin: 50px;
-    background-image: url(./heart2.png);
+    background-image: url(./bag.webp);
     background-size: cover;
     background-repeat: no-repeat;
     /* Avoid repetition */
@@ -13,7 +13,7 @@ body {
     /* Keeps the background fixed while scrolling */
 }
 h1 {
-    color: red;
+    color: rgb(183 182 187);
     font-weight: 900;
     font-family:  Georgia, Times, 'Times New Roman', serif;
 }
@@ -23,7 +23,7 @@ form {
     padding: 20px;
     background-color: transparent;
     border-radius: 8px;
-    color: blue;
+    color: rgb(177, 115, 16);
     text-shadow: 0 0 30px white;
 }
 
@@ -45,14 +45,14 @@ input {
     border-radius: 15% 75%;
 }
 input:hover {
-    background-color:#ff00006e;
+    background-color:rgb(100 21 21);
     color: white;
     text-align: center;
  
 }
 
 button {
-    background-color: red;
+    background-color: rgb(100 21 21);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -92,20 +92,24 @@ button {
  }
 
  .prediction-alert.red {
-     background-image: url('../static/heart_attack.webp');
+     background-image: url('../static/back2.webp');
      /* Set the background image for heart disease prediction */
-     color: red;
+     color: rgb(244, 206, 118);
      font-weight: 900;
      /* Set text color for better visibility */
  }
   .prediction-alert.red h1{
-
-      color: red;
+      color: rgb(100 21 21);
       font-weight: 900;
   }
 
- .prediction-alert.green h1{
-     color: rgb(8, 246, 8);
+ .prediction-alert.green h1{ 
+       color: rgb(255, 255, 255);
      font-weight: 900;
-     /* Set the background image for well prediction */
+     font-size: xx-large;
  }
+  .prediction-alert.green {
+     width: 500px;
+      background-image: url('../static/back2.webp');
+
+  }
