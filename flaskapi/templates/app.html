@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <title>Arabic Sarcasm Prediction System</title>
     <style>
-    
+        /* Add your custom styles here */
     </style>
 </head>
 
@@ -22,6 +22,13 @@
             <option value="msa">Modern Standard Arabic</option>
             <option value="gulf">Gulf Arabic</option>
             <!-- Add other dialect values as needed -->
+        </select>
+
+        <label for="sentiment">Sentiment:</label>
+        <select id="sentiment" name="sentiment" required>
+            <option value="NEU">Neutral</option>
+            <option value="NEG">Negative</option>
+            <!-- Add other sentiment values as needed -->
         </select>
 
         <!-- Add other features as needed -->
@@ -45,6 +52,8 @@
             const featureMapping = {
                 'tweet': 'tweet',
                 'dialect': 'dialect',
+                'sentiment': 'sentiment',
+                // Add other features as needed
             };
 
             formData.forEach((value, key) => {
@@ -59,15 +68,15 @@
             axios.post('/predict', jsonData)
                 .then(response => {
                     const data = response.data;
-    
+                    console.log(response.data);
 
                     // Display an alert based on the prediction result
                     const alert = document.createElement('div');
                     alert.className = 'prediction-alert';
-                    alert.classList.add(data.prediction === "1" ? 'red' : 'green');
+                    alert.classList.add(data.prediction === "True" ? 'red' : 'green');
 
                     // Set the message based on the prediction
-                    alert.innerHTML = `<div><h1>${data.prediction === "1" ? 'Sarcasm Detected.' : 'Not Sarcastic.'}</h1></div>`;
+                    alert.innerHTML = `<div><h1>${data.prediction === "True" ? 'Sarcasm Detected.' : 'Not Sarcastic.'}</h1></div>`;
 
                     // Append the alert to the body
                     document.body.appendChild(alert);

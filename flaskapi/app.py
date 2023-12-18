@@ -1,11 +1,10 @@
 from flask import Flask, render_template, request, jsonify
 from models.sarcasm_model_creator import load_model
 import numpy as np
-from flask import Flask, request, jsonify
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
-import joblib
+
 app = Flask(__name__, template_folder='./templates')
 sarcasm_model = load_model()  # Load the model outside the route function
 
@@ -43,7 +42,10 @@ def predict():
 
         # Make predictions
         prediction = sarcasm_model.predict(X_final)
-        print("Prediction:", prediction)
+
+        # Print the prediction in the terminal
+        print("Prediction (sarcasm value):", prediction)
+
         # Return the prediction as JSON
         return jsonify({'prediction': int(prediction[0])})
 
