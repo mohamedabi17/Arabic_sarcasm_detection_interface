@@ -6,13 +6,16 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
 from scipy.sparse import hstack
 import joblib
-
-app = Flask(__name__, template_folder='./templates')
-sarcasm_model = load_model()  # Load the model outside the route function
+from sklearn.preprocessing import OneHotEncoder
+app = Flask(__name__, template_folder='./templates')# Load the model outside the route function
 
 @app.route('/')
 def home():
     return render_template('app.html')  # Adjust the path based on your folder structure
+
+# Load the vectorizer and model during initialization
+vectorizer = TfidfVectorizer()  # You should fit this vectorizer during model training
+sarcasm_model = load_model()
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -21,22 +24,20 @@ def predict():
         data = request.json
 
         # Preprocess the input data
-        tweet = data['tweet'].strip('"')
+        tweet = data.get('tweet', '').strip('"')
+        dialect = data.get('dialect', '')  # Assuming 'dialect' is a key in the JSON payload
 
         # Create a DataFrame with the input data
-        input_data = pd.DataFrame({'tweet': [tweet]})
+        input_data = pd.DataFrame({'tweet': [tweet], 'dialect': [dialect]})
 
-        # One-hot encode categorical columns ('sentiment' and 'dialect')
-        encoder = OneHotEncoder(sparse_output=True)
-        categorical_encoded = encoder.fit_transform(input_data[['sentiment', 'dialect']])
-        X_encoded = pd.concat([pd.DataFrame(categorical_encoded.toarray()), input_data[['tweet']]], axis=1)
+        # Vectorize the text data using the pre-fitted vectorizer
+        text_vectorized = vectorizer.transform(input_data['tweet'])
 
-        # Vectorize the text data
-        vectorizer = TfidfVectorizer()
-        text_vectorized = vectorizer.transform(X_encoded['tweet'])
-
+        # One-hot encode the 'dialect' column
+        dialect_encoded = encoder.transform(input_data[['dialect']])
+        
         # Combine vectorized text and one-hot encoded features
-        X_final = hstack([text_vectorized, X_encoded.drop('tweet', axis=1)])
+        X_final = hstack([text_vectorized, dialect_encoded])
 
         # Make predictions
         prediction = sarcasm_model.predict(X_final)

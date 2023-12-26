@@ -52,12 +52,15 @@ df_test = pd.read_csv('testing_data.csv')
 df['tweet'] = df['tweet'].str.strip('"').dropna()
 
 # Extract labels and texts
-labels, texts = df["sarcasm"], df["tweet"]
+labels, texts = df["sarcasm"], df[["tweet", "dialect"]]
+
+vectorizer = TfidfVectorizer() 
+
 
 # One-hot encode categorical columns ('sentiment' and 'dialect')
 encoder = OneHotEncoder(sparse_output=True)  # Use sparse_output instead of sparse
-categorical_encoded = encoder.fit_transform(df[['sentiment', 'dialect']])
-X_encoded = hstack([categorical_encoded, TfidfVectorizer().fit_transform(texts)])
+categorical_encoded = encoder.fit_transform(df[['dialect']])
+X_encoded = hstack([categorical_encoded, vectorizer.fit_transform(df["tweet"])])
 
 # Train the model
 randomforest_classifier = RandomForestClassifier()
@@ -78,8 +81,6 @@ print(f"Model Accuracy: {accuracy:.2%}")
 print("Confusion Matrix:\n", conf_matrix)
 print("Classification Report:\n", class_report)
 
-# Save the trained model to a joblib file
-joblib.dump(randomforest_classifier, 'sarcasm_model.joblib')
 
 # Save the trained model to a joblib file
-joblib.dump(randomforest_classifier, 'sarcasm_model_v3.joblib')
+joblib.dump(randomforest_classifier, 'sarcasm_model_v4.joblib')

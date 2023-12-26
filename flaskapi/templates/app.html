@@ -24,13 +24,6 @@
             <!-- Add other dialect values as needed -->
         </select>
 
-        <label for="sentiment">Sentiment:</label>
-        <select id="sentiment" name="sentiment" required>
-            <option value="NEU">Neutral</option>
-            <option value="NEG">Negative</option>
-            <!-- Add other sentiment values as needed -->
-        </select>
-
         <!-- Add other features as needed -->
 
         <button type="button" onclick="predict()">Predict</button>
@@ -52,7 +45,6 @@
             const featureMapping = {
                 'tweet': 'tweet',
                 'dialect': 'dialect',
-                'sentiment': 'sentiment',
                 // Add other features as needed
             };
 

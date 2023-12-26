@@ -3,5 +3,5 @@ GET http://127.0.0.1:5000/
 ###
 
 
-curl -X POST -H "Content-Type: application/json" -d '{"dialect": "msa", "tweet": "نثتنمبتثصبتثصمنب"}' http://127.0.0.1:5000/predict
 
+curl -X POST -H "Content-Type: application/json" -d '{"tweet": "تىلصنتثى","dialect":"msa"}' http://127.0.0.1:5000/predict
