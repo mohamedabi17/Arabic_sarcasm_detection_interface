@@ -58,10 +58,12 @@ labels, texts = df["sarcasm"], df[["tweet", "dialect"]]
 # One-hot encode categorical columns ('sentiment' and 'dialect')
 encoder = OneHotEncoder(sparse_output=True)  # Use sparse_output instead of sparse
 categorical_encoded = encoder.fit_transform(df[['dialect']])
+joblib.dump(encoder, 'encoder.joblib')  # Save the encoder
+
 
 vectorizer = TfidfVectorizer()
 X_text = vectorizer.fit_transform(texts)
-
+joblib.dump(vectorizer, 'vectorizer.joblib')
 X_encoded = hstack([categorical_encoded, vectorizer.fit_transform(df["tweet"])])
 
 # Train the model
