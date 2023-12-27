@@ -54,12 +54,14 @@ df['tweet'] = df['tweet'].str.strip('"').dropna()
 # Extract labels and texts
 labels, texts = df["sarcasm"], df[["tweet", "dialect"]]
 
-vectorizer = TfidfVectorizer() 
-
 
 # One-hot encode categorical columns ('sentiment' and 'dialect')
 encoder = OneHotEncoder(sparse_output=True)  # Use sparse_output instead of sparse
 categorical_encoded = encoder.fit_transform(df[['dialect']])
+
+vectorizer = TfidfVectorizer()
+X_text = vectorizer.fit_transform(texts)
+
 X_encoded = hstack([categorical_encoded, vectorizer.fit_transform(df["tweet"])])
 
 # Train the model

@@ -6,16 +6,19 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.preprocessing import OneHotEncoder
 from scipy.sparse import hstack
 import joblib
-from sklearn.preprocessing import OneHotEncoder
-app = Flask(__name__, template_folder='./templates')# Load the model outside the route function
+
+app = Flask(__name__, template_folder='./templates')
+
+# Load the model during initialization
+sarcasm_model = load_model()
+
+# Load the vectorizer and encoder during initialization
+vectorizer = joblib.load('vectorizer.joblib')  # Replace with the actual file name
+encoder = joblib.load('encoder.joblib')  # Replace with the actual file name
 
 @app.route('/')
 def home():
     return render_template('app.html')  # Adjust the path based on your folder structure
-
-# Load the vectorizer and model during initialization
-vectorizer = TfidfVectorizer()  # You should fit this vectorizer during model training
-sarcasm_model = load_model()
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -33,8 +36,11 @@ def predict():
         # Vectorize the text data using the pre-fitted vectorizer
         text_vectorized = vectorizer.transform(input_data['tweet'])
 
+
+        encoder = OneHotEncoder(sparse_output=True)
+        dialect_encoded = encoder.fit_transform(input_data[['dialect']]) 
         # One-hot encode the 'dialect' column
-        dialect_encoded = encoder.transform(input_data[['dialect']])
+        # dialect_encoded = encoder.fit_transform(input_data[['dialect']])
         
         # Combine vectorized text and one-hot encoded features
         X_final = hstack([text_vectorized, dialect_encoded])
