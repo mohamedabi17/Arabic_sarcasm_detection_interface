@@ -62,7 +62,7 @@ joblib.dump(encoder, 'encoder.joblib')  # Save the encoder
 
 
 vectorizer = TfidfVectorizer()
-X_text = vectorizer.fit_transform(texts)
+X_text = vectorizer.fit_transform(df["tweet"])
 joblib.dump(vectorizer, 'vectorizer.joblib')
 X_encoded = hstack([categorical_encoded, vectorizer.fit_transform(df["tweet"])])
 print("X_final shape:", X_encoded.shape)
