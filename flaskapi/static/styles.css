@@ -99,8 +99,9 @@ button {
      /* Set text color for better visibility */
  }
   .prediction-alert.red h1{
-      color: rgb(100 21 21);
+      color: rgb(255, 0, 0);
       font-weight: 900;
+        font-size: 50px;
   }
 
  .prediction-alert.green h1{ 

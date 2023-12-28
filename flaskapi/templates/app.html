@@ -60,22 +60,22 @@
             axios.post('/predict', jsonData)
                 .then(response => {
                     const data = response.data;
-                    console.log(response.data);
+                    console.log(data);
 
                     // Display an alert based on the prediction result
                     const alert = document.createElement('div');
                     alert.className = 'prediction-alert';
-                    alert.classList.add(data.prediction === "True" ? 'red' : 'green');
+                    alert.classList.add(data.prediction === 1 ? 'red' : 'green');
 
                     // Set the message based on the prediction
-                    alert.innerHTML = `<div><h1>${data.prediction === "True" ? 'Sarcasm Detected.' : 'Not Sarcastic.'}</h1></div>`;
-
+                    alert.innerHTML = `<div><h1>${data.prediction === 1 ? 'Sarcasm Detected.' : 'Not Sarcastic.'}</h1></div>`;
+                    console.log(data.prediction === 1 )
                     // Append the alert to the body
                     document.body.appendChild(alert);
                     // Set a timeout to remove the alert after a certain duration (e.g., 5000 milliseconds)
                     setTimeout(() => {
                         alert.remove();
-                    }, 5000);
+                    }, 1000);
                 })
                 .catch(error => {
                     console.error('Error:', error);

@@ -65,7 +65,7 @@ vectorizer = TfidfVectorizer()
 X_text = vectorizer.fit_transform(texts)
 joblib.dump(vectorizer, 'vectorizer.joblib')
 X_encoded = hstack([categorical_encoded, vectorizer.fit_transform(df["tweet"])])
-
+print("X_final shape:", X_encoded.shape)
 # Train the model
 randomforest_classifier = RandomForestClassifier()
 randomforest_classifier.fit(X_encoded, labels)
