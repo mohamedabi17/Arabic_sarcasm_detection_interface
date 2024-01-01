@@ -23,13 +23,12 @@ def home():
 def predict():
     try:
         df_test = pd.read_csv('./models/testing_data.csv')
-        # Get input data from the request
         data = request.json
         labels, texts = df_test["sarcasm"], df_test[["tweet", "dialect"]]
-        # Preprocess the input data
+ 
         df_test=df_test[["tweet", "dialect"]]
         df_test = df_test.dropna(subset=['dialect'], how='any', inplace=True)
-        # Reset the index after dropping the row
+       
         tweet = data.get('tweet', '').strip('"')
         dialect = data.get('dialect', '')  # Assuming 'dialect' is a key in the JSON payload
         
