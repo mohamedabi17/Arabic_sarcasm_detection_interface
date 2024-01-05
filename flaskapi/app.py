@@ -48,7 +48,7 @@ def predict():
         X_final = hstack([text_vectorized, categorical_encoded])
         print(X_final.shape)
         # Make predictions
-        # sarcasm_model.fit(X_final,labels)
+    
         prediction = sarcasm_model.predict(X_final)
 
         # Print the prediction in the terminal
