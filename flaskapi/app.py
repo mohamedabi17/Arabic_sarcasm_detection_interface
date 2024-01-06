@@ -40,8 +40,7 @@ def predict():
 
         # Vectorize the text data using the pre-fitted vectorizer
         text_vectorized = vectorizer.transform(df_test['tweet'])
-        
-        # One-hot encode the 'dialect' column using the pre-fitted encoder
+  
         categorical_encoded = encoder.transform(df_test[['dialect']])
         
         # Combine vectorized text and one-hot encoded features
