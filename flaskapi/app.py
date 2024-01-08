@@ -46,7 +46,6 @@ def predict():
         # Combine vectorized text and one-hot encoded features
         X_final = hstack([text_vectorized, categorical_encoded])
         print(X_final.shape)
-        # Make predictions
     
         prediction = sarcasm_model.predict(X_final)
 
