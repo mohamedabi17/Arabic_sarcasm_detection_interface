@@ -51,7 +51,6 @@ def predict():
         # Print the prediction in the terminal
         print("Prediction (sarcasm value):", prediction[0])
 
-        # Return the prediction as JSON
         return jsonify({'prediction': int(prediction[0])})
 
     except Exception as e:
