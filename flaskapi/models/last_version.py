@@ -1,12 +1,6 @@
-# %%
-# This Python 3 environment comes with many helpful analytics libraries installed
-# It is defined by the kaggle/python Docker image: https://github.com/kaggle/docker-python
-# For example, here's several helpful packages to load
-
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 
-# %%
 import numpy as np
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -21,8 +15,6 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 
 df = pd.read_csv('training_data.csv')
 df_test = pd.read_csv('testing_data.csv')
-
-# %%
 
 # Preprocess data
 df['tweet'] = df['tweet'].str.strip('"').dropna()

@@ -22,31 +22,23 @@ def home():
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
-        df_test = pd.read_csv('./models/testing_data.csv')
         data = request.json
-        labels, texts = df_test["sarcasm"], df_test[["tweet", "dialect"]]
- 
-        df_test=df_test[["tweet", "dialect"]]
-        df_test = df_test.dropna(subset=['dialect'], how='any', inplace=True)
-       
+        
         tweet = data.get('tweet', '').strip('"')
-        dialect = data.get('dialect', '')  # Assuming 'dialect' is a key in the JSON payload
+        dialect = data.get('dialect', '')
         
-        # Create a DataFrame with the input data
-        input_data = pd.DataFrame({'tweet': [tweet], 'dialect': [dialect]})
-
-        # Append input data to df_test
-        df_test = pd.concat([df_test, input_data], ignore_index=False)
-
         # Vectorize the text data using the pre-fitted vectorizer
-        text_vectorized = vectorizer.transform(input_data['tweet'])
+        text_vectorized = vectorizer.transform([tweet])
   
-        categorical_encoded = encoder.transform(input_data[['dialect']])
+        # One-hot encode the dialect using the pre-fitted encoder
+        dialect_encoded = encoder.transform([[dialect]])
         
-        X_final = hstack([text_vectorized, categorical_encoded])
-        print(X_final.shape)
+        # Combine vectorized text and encoded dialect
+        X_final = hstack([text_vectorized, dialect_encoded])
     
-        prediction = sarcasm_model.predict(input_data.tweet)
+        # Predict using the pre-trained model
+        prediction = sarcasm_model.predict(X_final)
+        
         # Print the prediction in the terminal
         print("Prediction (sarcasm value):", prediction[0])
 
