@@ -39,15 +39,14 @@ def predict():
         df_test = pd.concat([df_test, input_data], ignore_index=False)
 
         # Vectorize the text data using the pre-fitted vectorizer
-        text_vectorized = vectorizer.transform(df_test['tweet'])
+        text_vectorized = vectorizer.transform(input_data['tweet'])
   
-        categorical_encoded = encoder.transform(df_test[['dialect']])
+        categorical_encoded = encoder.transform(input_data[['dialect']])
         
         X_final = hstack([text_vectorized, categorical_encoded])
         print(X_final.shape)
     
-        prediction = sarcasm_model.predict(X_final)
-
+        prediction = sarcasm_model.predict(input_data.tweet)
         # Print the prediction in the terminal
         print("Prediction (sarcasm value):", prediction[0])
 
